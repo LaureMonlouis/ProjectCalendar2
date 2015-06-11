@@ -15,7 +15,7 @@
 
 using namespace std;
 
-
+    QTime & operator +(const QTime & u, const QTime & v);
 
     class Evt {
 	  protected :
@@ -24,7 +24,7 @@ using namespace std;
 		QTime debut;
         QTime duree;
       public:
-        Evt(const QDate & d, const QString & s, const QTime& deb, const QTime & dur): date(d), sujet(s), debut(deb), duree(dur) {}
+        Evt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur): date(d), sujet(s), debut(deb), duree(dur) {}
 		virtual ~Evt() {}
 		const QString & getDescripteur() { return sujet; }
 		const QDate & getDate() { return date; }
@@ -36,25 +36,12 @@ using namespace std;
                 std::stringstream f;
                 f<<"******** Evenement ********"<<"\n\n"<<"Date = "<<date.toString()<<"\n"<<" Sujet = "<<sujet<<"\n\n";
                 return f.str();
-        }
-        virtual void afficher(std::ostream & f) const
-		{
-		    	std::stringstream f;
-		    	f<<toString();
-
-        virtual void afficher(std::ostream & f = std::cout) const
-        {
-            f<<"***** Evenement *****"<<std::endl;
-            f<<"\tDate :\t"<<date.toString(date.day()).toStdString()<<std::endl;      //Erreur ?!! Utiliser toStdStraing
-            f<<"\tSujet :\t"<<sujet.toStdString()<<std::endl;
-            f<<"\tDebut :\t"<<debut.toString(debut.minute()).toStdString()<<std::endl;
-            f<<"\tDuree :\t"<<duree<<std::endl;
         }*/
 
     };
 
     class EvtRDV: public Evt{
-		QString lieu;
+	QString lieu;
         QString personne;
       public:
         EvtRDV(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers):
@@ -74,13 +61,7 @@ using namespace std;
 		const QString & getLieu() const { return this->lieu; }
 		const QString & getPersonne() const { return this->personne; }
         bool imEvtTache() { return false; }
-       /* void afficher(std::ostream& f = std::cout) const
-        {
-             Evt::afficher(f);
-             f<<"\tLieu :\t"<<lieu<<std::endl;
-             f<<"\tPersonne :\t"<<personne<<std::endl;
-        }
-        QString toString() const
+        /*QString toString() const
 		{
 		   	 std::stringstream f;
 			f<<"******** Evenement ********"<<"\n\n"<<"Date = "<<date<<"\n"<<" Sujet = "<<sujet<<"\n"<<"Debut = "<<debut<<"\n"<<"Duree = "<<duree<<"\n"<<"Lieu = 					"<<lieu<<"Personne = "<<personne<<"\n\n";
@@ -88,22 +69,11 @@ using namespace std;
         }*/
     };
 
-    std::ostream & operator <<(std::ostream & f, Evt & j);		///A quoi ca sert ca ?
-
 	class EvtTache: public Evt {
         Tache * tache;
       public:
-        EvtTache(Tache * t,const QDate & d, const QString & s, const QTime& deb, const QTime & dur): Evt(d, s, deb, dur),tache(t) {}          //A finir !
+        //EvtTache(Tache * t): Evt(),tache(t) {}          //A finir !
         bool imEvtTache() { return true; }
-        /*void afficher(std::ostream & f = std::cout)
-        {
-            f<<"\tIdentificateur :\t"<<tache->getId()<<std::endl;
-            f<<"\tTitre :\t"<<tache->getTitre()<<std::endl;
-            f<<"\tDuree :\t"<<tache->getDuree()<<std::endl;
-            f<<"\tDisponibilité :\t"<<tache->getDateDisponibilite()<<std::endl;
-            f<<"\tEcheance:\t"<<tache->getDateEcheance()<<std::endl;
-            f<<"\tProgrammée :\t"<<tache->getProgrammee()<<std::endl;
-        }*/
 	};
 
     class EvtManager {
@@ -117,7 +87,7 @@ using namespace std;
         EvtManager() {}
         ~ EvtManager() {}
         Evt ** getEvt() { return evt; }
-        virtual void addEvt(const Evt * e, const QDate & date, const QTime & h,const bool pre);
+        virtual void addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre);
         virtual Evt & addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers);
         virtual void supprimerEvt(const QString & s);
         Evt * trouverEvt(const QString & s);

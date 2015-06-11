@@ -3,7 +3,7 @@
 #include "mainwindow.h"
 #include "fenajoutereve.h"
 #include <QCoreApplication>
-#include <QApplication>
+//#include <QApplication>
 
 
 

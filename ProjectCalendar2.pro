@@ -19,13 +19,13 @@ TEMPLATE = app
 
 
 SOURCES += main.cpp \
-    agenda.cpp\
     fenajoutereve.cpp \
     fenajoutertacheuni.cpp \
     fentachesprecedentes.cpp \
     gestionprojet.cpp \
     mainwindow.cpp \
-    timing.cpp
+    timing.cpp \
+    agenda.cpp
 
 FORMS += \
     fenajoutereve.ui \
@@ -34,10 +34,10 @@ FORMS += \
     mainwindow.ui
 
 HEADERS += \
-    agenda.h\
     fenajoutereve.h \
     fenajoutertacheuni.h \
     fentachesprecedentes.h \
     gestionprojet.h \
     mainwindow.h \
-    timing.h
+    timing.h \
+    agenda.h

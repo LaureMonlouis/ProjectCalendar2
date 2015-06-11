@@ -25,13 +25,15 @@ SOURCES += main.cpp \
     gestionprojet.cpp \
     mainwindow.cpp \
     timing.cpp \
-    agenda.cpp
+    agenda.cpp \
+    fentachescompo.cpp
 
 FORMS += \
     fenajoutereve.ui \
     fenajoutertacheuni.ui \
     fentachesprecedentes.ui \
-    mainwindow.ui
+    mainwindow.ui \
+    fentachescompo.ui
 
 HEADERS += \
     fenajoutereve.h \
@@ -40,4 +42,5 @@ HEADERS += \
     gestionprojet.h \
     mainwindow.h \
     timing.h \
-    agenda.h
+    agenda.h \
+    fentachescompo.h

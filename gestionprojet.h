@@ -128,9 +128,9 @@ public:
             return *currentTache;
         }
     };
-    Iterator getIterator()const {
-        TacheExplorer::Iterator i(taches,nb);
-        return i;
+    Iterator& getIterator()const {
+        TacheExplorer::Iterator* i = new Iterator(taches,nb);
+        return *i;
     }
     class iterator {
         Tache** current;

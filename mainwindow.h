@@ -1,7 +1,9 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
+#include "gestionprojet.h"
+#include <QApplication>
 
-//#include <QMainWindow>
+#include <QMainWindow>
 
 namespace Ui {
 class MainWindow;

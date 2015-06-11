@@ -1,11 +1,12 @@
 #include "agenda.h"
+#include "gestionprojet.h"
 
 using namespace std;
 
-QTime & operator +(const QTime & u, const QTime & v)
+/*QTime & operator +(const QTime & u, const QTime & v)
 {
     return QTime(u.hour()+v.hour(), u.minute()+v.minute());
-}
+}*///Inutile car QTime possède une méthode addSec() (a utiliser avec l'accesseur .second())
 
 /// ******************** Fonctions EvtManager ******************** ///
 
@@ -35,7 +36,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 		{
             if (evt[i]->getDate() == date)
 			{
-                QTime & fin = evt[i]->getDebut() + evt[i]->getDuree();
+                QTime fin =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
                 if((evt[i]->getDebut() < h) && (h < fin))
 				{
 					cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
@@ -54,17 +55,18 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 			return;
 		}
 		
-		iterator i = getTachesPrecedentesPourTraitement().getIterator();
+        TacheExplorer::Iterator i = t->getTachesPrecedentesPourTraitement()->getIterator();
 		while(!i.isDone())
 		{
-			if (!isEvtExistant(i.current2()))
+            //if (!isEvtExistant(i.current2())) isEvtExistant existant doit avoir pour paramètre evt*, la fonction est donc à définir
+            if (true)//en attendant
 			{
                 cout<<"Erreur de précédence !"<<endl;
 				return;
 			}
 			else
 			{
-                if (date < trouverEvt(i.current2().getID()).getDate())
+                if (date < trouverEvt(i.current2()->getId())->getDate())
 				{
 					cout<<"Erreur de précédence !"<<endl;
 					return;
@@ -72,7 +74,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 			}
 			i.next();
 		}
-        evt[nb]=Evt(date, t->getTitre(), h, t->getDuree());
+        //evt[nb]=Evt(date, t->getTitre(), h, t->getDuree());
         nb++;
 	}
     else
@@ -81,7 +83,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
     }
 }
 
-/// ********** Fonction auxiliere pour créer une tache préemptée ********** ///
+/// ********** Fonction auxiliaire pour créer une tache préemptée ********** ///
 
 //void addTachePre(unsigned int nbPre, )
 //Fonction compliquée car quel parametres rentrer : une date ? ou plusieurs ? et les horaires ?
@@ -92,17 +94,18 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 
 Evt & EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers)
 {
-    EvtRDV * rdv = EvtRDV(d,s,deb,dur,l,pers);
+    EvtRDV * rdv = new EvtRDV(d,s,deb,dur,l,pers);
 
     for (unsigned int i = 0; i<nb; i++)
     {
         if (evt[i]->getDate() == rdv->getDate())
         {
-            QTime & fin = evt[i]->getDebut() + evt[i].getDuree();
+            //QTime & fin = evt[i]->getDebut() + evt[i]->getDuree();
+            QTime fin =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
             if((evt[i]->getDebut() < rdv->getDebut()) && (rdv->getDebut() < fin))
             {
                 cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
-                return;
+                return *rdv;
             }
         }
     }
@@ -127,7 +130,7 @@ Evt & EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & de
 
 void EvtManager::supprimerEvt(const QString & s)
 {
-    Evt * tmp = & trouverEvt(s);
+    Evt* tmp = trouverEvt(s);
     delete tmp;
     nb--;
 }

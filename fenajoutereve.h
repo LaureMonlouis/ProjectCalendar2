@@ -1,7 +1,7 @@
 #ifndef FENAJOUTEREVE_H
 #define FENAJOUTEREVE_H
 
-#include <QWidget>
+//#include <QWidget>
 
 namespace Ui {
 class fenAjouterEve;

@@ -2,14 +2,16 @@
 
 using namespace std;
 
-
-
+QTime & operator +(const QTime & u, const QTime & v)
+{
+    return QTime(u.hour()+v.hour(), u.minute()+v.minute());
+}
 
 /// ******************** Fonctions EvtManager ******************** ///
 
 /// ********** Fonction pour ajouter une tache déjà existante ********** ///
 
-void EvtManager::addEvt(const evt* t, const QDate & date, const QTime & h, bool pre) {
+void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre) {
 	//evt -> tableau de tous les evt existants (taches et RDV)
 	//evt[] pointe sur un evenement particulier et evt[][] est l'evenement en lui meme
 	//evt[].getTruc pour les données
@@ -31,22 +33,22 @@ void EvtManager::addEvt(const evt* t, const QDate & date, const QTime & h, bool 
 	{  	
 		for (unsigned int i = 0; i<nb; i++)
 		{
-			if (evt[i].getDate() == date)
+            if (evt[i]->getDate() == date)
 			{
-				unsigned int fin = evt[i].getHoraire() + evt[i].getDuree;		// L'opérateur + doit pas etre defini entre QTime et Duree
-				if((evt[i].getHoraire() < h) && (h < fin))
+                QTime & fin = evt[i]->getDebut() + evt[i]->getDuree();
+                if((evt[i]->getDebut() < h) && (h < fin))
 				{
 					cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
 					return;
 				}
 			}
 		}
-		if (date < t.getDateDisponibilite())
+        if (date < t->getDateDisponibilite())
 		{
 			cout<<"Erreur, la date demandée est antérieure à la date de disponibilité de la tache"<<endl;
 			return;
 		}
-		if (date > t.getDateEcheance())
+        if (date > t->getDateEcheance())
 		{
 			cout<<"Erreur, la date demandée est postérieure à la date d'échéance de la tache"<<endl;
 			return;
@@ -70,7 +72,7 @@ void EvtManager::addEvt(const evt* t, const QDate & date, const QTime & h, bool 
 			}
 			i.next();
 		}
-        evt[nb]=t;
+        evt[nb]=Evt(date, t->getTitre(), h, t->getDuree());
         nb++;
 	}
     else
@@ -88,17 +90,16 @@ void EvtManager::addEvt(const evt* t, const QDate & date, const QTime & h, bool 
 
 /// ********** Fonction pour créer puis ajouter une tache ou un RDV ********** ///
 
-virtual Evt & addNewEvt(const QDate & d, const QString & s, const QTime & deb, const Duree & dur, const QString & l, const QString & pers)
+Evt & EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers)
 {
-    //Appel constructeur du RDV + le mettre en tache (on ne peux pas creer une tache ici)
     EvtRDV * rdv = EvtRDV(d,s,deb,dur,l,pers);
 
     for (unsigned int i = 0; i<nb; i++)
     {
-        if (evt[i].getDate() == rdv->getDate())
+        if (evt[i]->getDate() == rdv->getDate())
         {
-            unsigned int fin = evt[i].getHoraire() + evt[i].getDuree;		// L'opérateur + doit pas etre defini entre QTime et Duree
-            if((evt[i].getHoraire() < rdv->getDebut()) && (rdv->getDebut() < fin))
+            QTime & fin = evt[i]->getDebut() + evt[i].getDuree();
+            if((evt[i]->getDebut() < rdv->getDebut()) && (rdv->getDebut() < fin))
             {
                 cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
                 return;
@@ -124,7 +125,7 @@ virtual Evt & addNewEvt(const QDate & d, const QString & s, const QTime & deb, c
 
 /// ********** Fonction pour supprimer un evenement ********** ///
 
-virtual void EvtManager::supprimerEvt(const QString & s)
+void EvtManager::supprimerEvt(const QString & s)
 {
     Evt * tmp = & trouverEvt(s);
     delete tmp;
@@ -137,7 +138,7 @@ Evt * EvtManager::trouverEvt(const QString & s)
 {
 	for(unsigned int i=0; i<nb; i++)
 	{
-		if (evt[i].getSujet() == s)
+        if (evt[i]->getDescripteur() == s)
 		{
 			return evt[i];
 		}

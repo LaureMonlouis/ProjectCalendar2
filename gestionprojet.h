@@ -4,7 +4,7 @@
 #include <QDate>
 #include <QFile>
 #include <QTextStream>
-#include <QMessageBox>
+//#include <QMessageBox>
 #include <QtXml>
 #include "timing.h"
 

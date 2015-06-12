@@ -12,10 +12,10 @@ using namespace std;
 
 /// ********** Fonction pour ajouter une tache déjà existante ********** ///
 
-void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre) {
+void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre, unsigned int nbpre) {
 	//evt -> tableau de tous les evt existants (taches et RDV)
 	//evt[] pointe sur un evenement particulier et evt[][] est l'evenement en lui meme
-	//evt[].getTruc pour les données
+    //evt[].getTruc pour les acceder aux donnes de l'evt
 
 	if (nb == nbMax)
 	{			
@@ -36,12 +36,18 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 		{
             if (evt[i]->getDate() == date)
 			{
-                QTime fin =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
-                if((evt[i]->getDebut() < h) && (h < fin))
+                QTime finEvt =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
+                if((evt[i]->getDebut() < h) && (h < finEvt))
 				{
 					cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
 					return;
 				}
+                QTime finT =  QTime (0,0,h.second() + t->getDuree().second());
+                if((evt[i]->getDebut() < finT) && (finT < finEvt))
+                {
+                    cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
+                    return;
+                }
 			}
 		}
         if (date < t->getDateDisponibilite())
@@ -79,15 +85,40 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 	}
     else
     {
-        //Appel a une autre fonction addTachePre (pour tache preemptee), voir juste en dessous
+        for(unsigned int x = 0; x<nbpre; x++)
+        {
+            cout<<"Veuillez entrer les caracteristiques de la preemption numéro "<<x<<" :"<<endl;
+            cout<<"\t1) Date"<<endl<<"\t2) Heure de debut"<<endl<<"\t3) Duree"<<endl;
+            //Recuperer les donnes a partir de l'interface ...
+            //addTachePre(date,hDebut,duree);
+        }
     }
 }
 
 /// ********** Fonction auxiliaire pour créer une tache préemptée ********** ///
 
-//void addTachePre(unsigned int nbPre, )
-//Fonction compliquée car quel parametres rentrer : une date ? ou plusieurs ? et les horaires ?
-//Il faut faire une fonction qui va demander tout ca a l'utilisateur en fonction du nbr de preemption qu'il veut
+void EvtManager::addTachePre(const QDate & date, const QTime & h, const QTime & dur)
+{
+    for (unsigned int i = 0; i<nb; i++)
+    {
+        if (evt[i]->getDate() == date)
+        {
+            QTime finEvt =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
+            if((evt[i]->getDebut() < h) && (h < finEvt))
+            {
+                cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
+                return;
+            }
+            QTime finT =  QTime (0,0,h.second() + dur.second());
+            if((evt[i]->getDebut() < finT) && (finT < finEvt))
+            {
+                cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
+                return;
+            }
+        }
+    }
+}
+
 
 
 /// ********** Fonction pour créer puis ajouter une tache ou un RDV ********** ///
@@ -101,10 +132,16 @@ void EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & deb
         if (evt[i]->getDate() == rdv->getDate())
         {
             //QTime & fin = evt[i]->getDebut() + evt[i]->getDuree();
-            QTime fin =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
-            if((evt[i]->getDebut() < rdv->getDebut()) && (rdv->getDebut() < fin))
+            QTime finEvt =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
+            if((evt[i]->getDebut() < rdv->getDebut()) && (rdv->getDebut() < finEvt))
             {
                 cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
+            }
+            QTime finT =  QTime (0,0,deb.second() + dur.second());
+            if((evt[i]->getDebut() < finT) && (finT < finEvt))
+            {
+                cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
+                return;
             }
         }
     }

@@ -17,7 +17,6 @@ CONFIG   -= app_bundle
 
 TEMPLATE = app
 
-
 SOURCES += main.cpp \
     fenajoutereve.cpp \
     fenajoutertacheuni.cpp \

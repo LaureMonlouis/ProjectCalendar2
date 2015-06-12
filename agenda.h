@@ -88,7 +88,8 @@ using namespace std;
         EvtManager() {}
         ~ EvtManager() {}
         Evt ** getEvt() { return evt; }
-        virtual void addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre);
+        virtual void addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre, unsigned int nbpre = 0);
+        void addTachePre(const QDate & date, const QTime & h, const QTime & dur);
         virtual void addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers);
         virtual void supprimerEvt(const QString & s);
         Evt * trouverEvt(const QString & s);
@@ -134,7 +135,7 @@ using namespace std;
         };
         iterator begin() { return iterator(evt); }
         iterator end() { return iterator(evt+nb); }*/
-    };   
+    };
 
 
 #endif // EVENEMENT_H_INCLUDED

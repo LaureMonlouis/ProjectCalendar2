@@ -1,7 +1,7 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 #include "gestionprojet.h"
-#include <QApplication>
+#include <QCoreApplication>
 
 #include <QMainWindow>
 

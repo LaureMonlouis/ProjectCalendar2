@@ -40,7 +40,7 @@ class VisiteurSauvegarde:public VisiteurTache{
 public :
     VisiteurSauvegarde(const QString& f):VisiteurTache(),file(f),newfile(f){
         if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
-            throw CalendarException(QString("erreur sauvegarde t�ches : ouverture fichier xml"));
+            throw CalendarException(QString("erreur sauvegarde taches : ouverture fichier xml"));
         stream = new QXmlStreamWriter (&newfile);
     }
     ~VisiteurSauvegarde(){}

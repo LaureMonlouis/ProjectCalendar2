@@ -43,6 +43,9 @@ void VisiteurSauvegarde::visiterProjet(Projet* p){
     stream->setAutoFormatting(true);
     stream->writeStartDocument();
     stream->writeStartElement("Projet");
+    stream->writeTextElement("identificateur",p->getId());
+    stream->writeTextElement("titre",p->getTitre());
+    stream->writeTextElement("description",p->getDescription());
     TacheExplorer::Iterator it = p->sousTaches->getIterator();
     while(!it.isDone()){
         it.current2()->accept(this);

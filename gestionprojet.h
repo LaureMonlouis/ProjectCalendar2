@@ -231,6 +231,7 @@ public:
     Projet(const QString& id, const QString& t,const QString& des):
         TacheComposite(id,t),description(des){}
     virtual ~Projet();
+    QString getDescription()const{return description;}
 private:
     QString description;
 };

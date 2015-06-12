@@ -368,7 +368,7 @@ QDate TacheComposite::findEcheance() const{
 
 bool TacheComposite::findAllProgrammed()const{
     bool d=true;
-    TacheExplorer::Iterator i = sousTaches->getIterator();
+    TacheExplorer::Iterator & i = sousTaches->getIterator();
     while(!i.isDone()){
         if (i.current2()->getProgrammee()==false)
         {

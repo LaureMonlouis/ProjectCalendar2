@@ -57,6 +57,7 @@ using namespace std;
 
                 EvtRDV *x = this;
 		    	*x = r;
+                return *x;
 		}
 		const QString & getLieu() const { return this->lieu; }
 		const QString & getPersonne() const { return this->personne; }
@@ -88,7 +89,7 @@ using namespace std;
         ~ EvtManager() {}
         Evt ** getEvt() { return evt; }
         virtual void addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre);
-        virtual Evt & addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers);
+        virtual void addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers);
         virtual void supprimerEvt(const QString & s);
         Evt * trouverEvt(const QString & s);
         bool isEvtExistant(Evt * e) { return trouverEvt(e->getDescripteur()) != NULL; }
@@ -96,9 +97,9 @@ using namespace std;
         void save(QString & f);
 
         class Iterator{
-            Evt ** currentEvt;
             unsigned int nbRemain;
-            Iterator(Evt ** e, unsigned int nb): currentEvt(e), nbRemain(nb) {}
+            Evt ** currentEvt;
+            Iterator(unsigned int nb,Evt ** e ): nbRemain(nb),currentEvt(e) {}
             friend class EvtManager;
         public:
             Iterator(): nbRemain(0), currentEvt(0) {}
@@ -117,7 +118,7 @@ using namespace std;
         };
 
         Iterator * getIterator()const {
-            Iterator * i = new Iterator(evt,nb);
+            Iterator * i = new Iterator(nb,evt);
             return i;
         }
 

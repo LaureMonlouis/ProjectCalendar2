@@ -8,11 +8,13 @@
 #include <QtXml>
 #include "timing.h"
 
+const QDate DATE_MIN = QDate(0,1,1);
+const QDate DATE_MAX = QDate(9999,1,1);
+const QTime D_NON_PREEMPT = QTime (12,0);
 
 class CalendarException{
 public:
     CalendarException(const QString& message):info(message){
-
         //QMessageBox::warning(this, "Erreur", getInfo());
     }
     QString getInfo() const { return info; }
@@ -54,8 +56,6 @@ class TacheExplorer;
 
 class Tache {
 protected:
-    const QDate DATE_MIN = QDate(0,1,1);
-    const QDate DATE_MAX = QDate(9999,1,1);
     QString identificateur;
     QString titre;
     QTime duree;
@@ -98,7 +98,9 @@ protected:
     void ajouterTacheUnitaire(const QString& id, const QString& t, const QTime& dur, const QDate& dispo, const QDate& deadline, bool preempt=false);
     TacheExplorer& operator=(const TacheExplorer& um);
 public:
-    TacheExplorer(){}
+    TacheExplorer():nb(0),nbMax(0){
+        taches = new Tache*[nb];
+    }
     ~TacheExplorer();
     TacheExplorer(const TacheExplorer& um);
     Tache& getTache(const QString& id);
@@ -109,9 +111,9 @@ public:
     void concatSansRedondance(const TacheExplorer* tE);
 
     class Iterator{
-        Tache** currentTache;
+        Iterator(unsigned int nb,Tache** u):nbRemain(nb), currentTache(u){}
         unsigned int nbRemain;
-        Iterator(Tache** u, unsigned int nb):currentTache(u),nbRemain(nb){}
+        Tache** currentTache;
         friend class TacheExplorer;
     public:
         Iterator():nbRemain(0),currentTache(0){}
@@ -128,9 +130,9 @@ public:
             return *currentTache;
         }
     };
-    Iterator& getIterator()const {
-        TacheExplorer::Iterator* i = new Iterator(taches,nb);
-        return *i;
+    Iterator& getIterator()const{
+        Iterator* it = new Iterator (this->nb,this->taches);
+        return *it;
     }
     class iterator {
         Tache** current;
@@ -144,7 +146,6 @@ public:
     };
     iterator begin() { return iterator(taches); }
     iterator end() { return iterator(taches+nb); }
-
 };
 
 class TacheManager:public TacheExplorer {
@@ -180,7 +181,7 @@ public:
             }
         }
     public:
-        DisponibiliteFilterIterator():nbRemain(0),currentTache(0){}
+        DisponibiliteFilterIterator():currentTache(0), nbRemain(0){}
         bool isDone() const { return nbRemain==0; }
         void next() {
             if (isDone())
@@ -203,9 +204,11 @@ public:
 class TacheComposite:public Tache{
 public:
     TacheComposite (const QString& id, const QString& t):
-        Tache(id,t,findDuree(),findDispo(),findEcheance(),findAllProgrammed()),sousTaches(new TacheExplorer()){
+        Tache(id,t,QTime(0,0),QDate(0,0,0),QDate(0,0,0)){
         tachesPrecedentesTraitement = new TacheExplorer();
         tachesPrecedentesAffichage = new TacheExplorer();
+        sousTaches = new TacheExplorer();
+        updateAttributs();
     }
     virtual ~TacheComposite();
     TacheExplorer* sousTaches;
@@ -246,8 +249,7 @@ public:
     virtual ~TacheUnitaire();
     void accept(VisiteurTache* v){v->visiterTacheUnitaire(this);}
     void setDuree(const QTime& d) {
-        QTime d2(12,0);
-        if(!preemptive && d.minute()>d2.minute()) throw CalendarException("Duree trop elevee (>12h) pour une tache non-preemptive");
+        if(!preemptive && d.minute()>D_NON_PREEMPT.minute()) throw CalendarException("Duree trop elevee (>12h) pour une tache non-preemptive");
         duree=d;
     }
     void setDatesDisponibiliteEcheance(const QDate& disp, const QDate& e) {
@@ -257,10 +259,10 @@ public:
         disponibilite=disp; echeance=e;}
     void ajouterTachePrecedenteA(Tache* u);
     void ajouterTachePrecedente(Tache* tP);
-    virtual void ajouterTacheComposite(const QString& id, const QString& t){
+    virtual void ajouterTacheComposite(const QString&, const QString&){
         throw CalendarException("erreur Tache : impossible d'ajouter une tache à une tache unitaire");
     }
-    virtual void ajouterTacheUnitaire(const QString& id, const QString& t, const QTime& dur, const QDate& dispo, const QDate& deadline, bool preempt){
+    virtual void ajouterTacheUnitaire(const QString&, const QString&, const QTime&, const QDate&, const QDate&, bool){
         throw CalendarException("erreur Tache : impossible d'ajouter une tache à une tache unitaire");
     }
     bool isUnitaire (){return true;}

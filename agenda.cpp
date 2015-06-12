@@ -92,7 +92,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 
 /// ********** Fonction pour créer puis ajouter une tache ou un RDV ********** ///
 
-Evt & EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers)
+void EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers)
 {
     EvtRDV * rdv = new EvtRDV(d,s,deb,dur,l,pers);
 
@@ -105,7 +105,6 @@ Evt & EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & de
             if((evt[i]->getDebut() < rdv->getDebut()) && (rdv->getDebut() < fin))
             {
                 cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
-                return *rdv;
             }
         }
     }

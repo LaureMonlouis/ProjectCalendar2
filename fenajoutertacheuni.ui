@@ -154,5 +154,230 @@
   </widget>
  </widget>
  <resources/>
- <connections/>
+ <connections>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>lineEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>21</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>56</x>
+     <y>46</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>lineEdit_2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>87</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>81</x>
+     <y>89</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>timeEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>136</x>
+     <y>25</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>162</x>
+     <y>119</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>dateEdit</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>199</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>185</x>
+     <y>146</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>dateEdit_2</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>233</x>
+     <y>20</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>203</x>
+     <y>176</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>checkBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>94</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>94</x>
+     <y>201</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton_2</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>comboBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>34</x>
+     <y>23</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>160</x>
+     <y>247</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>comboBox</receiver>
+   <slot>setEnabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>50</x>
+     <y>249</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>162</x>
+     <y>248</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>checkBox</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>39</x>
+     <y>252</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>114</x>
+     <y>209</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>dateEdit_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>56</x>
+     <y>242</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>155</x>
+     <y>174</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>dateEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>28</x>
+     <y>246</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>172</x>
+     <y>145</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>timeEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>72</x>
+     <y>248</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>180</x>
+     <y>117</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>lineEdit_2</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>36</x>
+     <y>251</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>117</x>
+     <y>84</y>
+    </hint>
+   </hints>
+  </connection>
+  <connection>
+   <sender>radioButton</sender>
+   <signal>clicked(bool)</signal>
+   <receiver>lineEdit</receiver>
+   <slot>setDisabled(bool)</slot>
+   <hints>
+    <hint type="sourcelabel">
+     <x>22</x>
+     <y>247</y>
+    </hint>
+    <hint type="destinationlabel">
+     <x>76</x>
+     <y>54</y>
+    </hint>
+   </hints>
+  </connection>
+ </connections>
 </ui>

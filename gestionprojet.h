@@ -130,9 +130,8 @@ public:
             return *currentTache;
         }
     };
-    Iterator& getIterator()const{
-        Iterator* it = new Iterator (this->nb,this->taches);
-        return *it;
+    Iterator getIterator()const{
+        return Iterator(nb,taches);
     }
     class iterator {
         Tache** current;
@@ -208,7 +207,7 @@ public:
         tachesPrecedentesTraitement = new TacheExplorer();
         tachesPrecedentesAffichage = new TacheExplorer();
         sousTaches = new TacheExplorer();
-        updateAttributs();
+        //updateAttributs();
     }
     virtual ~TacheComposite();
     TacheExplorer* sousTaches;
@@ -223,7 +222,6 @@ public:
     bool findAllProgrammed()const;
     void updateTachesPrecedentes();
     void updateAttributs();
-
     void ajouterTacheExistante(Tache* t);
 
 };

@@ -19,7 +19,7 @@ class MainWindow : public QMainWindow
     Ui::MainWindow *ui;
 };
 
-QTableView(QWidget * parent = 0);
+QTableView Qv (QWidget* parent = 0);
 
 
 #endif // MAINWINDOW_H

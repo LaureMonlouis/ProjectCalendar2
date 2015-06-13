@@ -71,9 +71,9 @@ using namespace std;
     };
 
 	class EvtTache: public Evt {
-        Tache tache;
+        const Tache* tache;
       public:
-        EvtTache(const QDate & d, const QTime & deb, const Tache & t): Evt(d, t.getTitre(), deb, t.getDuree()), tache(t) {}
+        EvtTache(const QDate & d, const QTime & deb, const Tache* t): Evt(d, t->getTitre(), deb, t->getDuree()), tache(t) {}
         bool imEvtTache() { return true; }
 	};
 

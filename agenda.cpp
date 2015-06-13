@@ -78,7 +78,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 			}
 			i.next();
 		}
-        evt[nb] = EvtTache(date, h, t);
+        evt[nb] = new EvtTache(date, h, t);
         nb++;
 	}
     else

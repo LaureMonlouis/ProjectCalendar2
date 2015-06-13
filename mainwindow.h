@@ -34,4 +34,9 @@ file.close();
 QTreeView view;
 view.setModel(&model);*/
 
+QStringList entetes;
+entete << "titre" << "message" << etc;
+
+ton_QTableView->setHorizontalHeaderLabels(entetes);
+
 #endif // MAINWINDOW_H

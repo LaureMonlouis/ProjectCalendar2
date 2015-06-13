@@ -5,7 +5,7 @@ fenAjouterEve::fenAjouterEve(QWidget *parent) :
     QWidget(parent),
     ui(new Ui::fenAjouterEve)
 {
-    ui->setupUi(this);
+    ui->setupUi(this);   
 }
 
 fenAjouterEve::~fenAjouterEve()

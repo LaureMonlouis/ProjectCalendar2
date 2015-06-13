@@ -3,10 +3,8 @@
 
 using namespace std;
 
-/*QTime & operator +(const QTime & u, const QTime & v)
-{
-    return QTime(u.hour()+v.hour(), u.minute()+v.minute());
-}*///Inutile car QTime possède une méthode addSec() (a utiliser avec l'accesseur .second())
+//EXEMPLE: ui->lineEdit_titre->accessibleDescription();
+//Pour recuperer la valeur entree je pense :)
 
 /// ******************** Fonctions EvtManager ******************** ///
 
@@ -80,7 +78,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 			}
 			i.next();
 		}
-        //evt[nb]=Evt(date, t->getTitre(), h, t->getDuree());
+        evt[nb] = EvtTache(date, h, t);
         nb++;
 	}
     else

@@ -2,23 +2,24 @@
 #define MAINWINDOW_H
 #include "gestionprojet.h"
 #include <QCoreApplication>
-
 #include <QMainWindow>
+#include <QTableView>
 
 namespace Ui {
-class MainWindow;
+    class MainWindow;
 }
 
 class MainWindow : public QMainWindow
 {
     Q_OBJECT
-
-public:
+  public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-
-private:
+  private:
     Ui::MainWindow *ui;
 };
+
+QTableView(QWidget * parent = 0);
+
 
 #endif // MAINWINDOW_H

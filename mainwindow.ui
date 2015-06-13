@@ -39,7 +39,7 @@
      <enum>QTabWidget::Rounded</enum>
     </property>
     <property name="currentIndex">
-     <number>0</number>
+     <number>1</number>
     </property>
     <widget class="QWidget" name="tabAgenda">
      <attribute name="title">
@@ -325,7 +325,7 @@
        <item>
         <layout class="QVBoxLayout" name="verticalLayout_2">
          <item>
-          <widget class="QTreeView" name="treeView"/>
+          <widget class="QTreeView" name="treeViewPerso"/>
          </item>
         </layout>
        </item>

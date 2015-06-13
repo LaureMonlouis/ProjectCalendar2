@@ -11,76 +11,83 @@ using namespace std;
 /// ********** Fonction pour ajouter une tache déjà existante ********** ///
 
 void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bool pre, unsigned int nbpre) {
-	//evt -> tableau de tous les evt existants (taches et RDV)
-	//evt[] pointe sur un evenement particulier et evt[][] est l'evenement en lui meme
+    //evt -> tableau de tous les evt existants (taches et RDV)
+    //evt[] pointe sur un evenement particulier et evt[][] est l'evenement en lui meme
     //evt[].getTruc pour les acceder aux donnes de l'evt
 
-	if (nb == nbMax)
-	{			
-		Evt ** newtab = new Evt * [nbMax + 10];
-		nbMax += 10;
-		for(unsigned int i = 0; i<nb; i++)
-		{
-			newtab[i]=evt[i];
-		}		
-		Evt ** old = evt;
-		evt = newtab;
-		delete[] old;
-	}
+    if (nb == nbMax)
+    {
+        Evt ** newtab = new Evt * [nbMax + 10];
+        nbMax += 10;
+        for(unsigned int i = 0; i<nb; i++)
+        {
+            newtab[i]=evt[i];
+        }
+        Evt ** old = evt;
+        evt = newtab;
+        delete[] old;
+    }
 
-	if (pre == false)
-	{  	
-		for (unsigned int i = 0; i<nb; i++)
-		{
+    if (pre == false)
+    {
+        for (unsigned int i = 0; i<nb; i++)
+        {
             if (evt[i]->getDate() == date)
-			{
+            {
                 QTime finEvt =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
                 if((evt[i]->getDebut() < h) && (h < finEvt))
-				{
-					cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
-					return;
-				}
+                {
+                    cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
+                    return;
+                }
                 QTime finT =  QTime (0,0,h.second() + t->getDuree().second());
                 if((evt[i]->getDebut() < finT) && (finT < finEvt))
                 {
                     cout<<"Erreur, la date et l'horaire démandés sont déjà occupés par un autre evenement !"<<endl;
                     return;
                 }
-			}
-		}
+            }
+        }
         if (date < t->getDateDisponibilite())
-		{
-			cout<<"Erreur, la date demandée est antérieure à la date de disponibilité de la tache"<<endl;
-			return;
-		}
+        {
+            cout<<"Erreur, la date demandée est antérieure à la date de disponibilité de la tache"<<endl;
+            return;
+        }
         if (date > t->getDateEcheance())
-		{
-			cout<<"Erreur, la date demandée est postérieure à la date d'échéance de la tache"<<endl;
-			return;
-		}
-		
+        {
+            cout<<"Erreur, la date demandée est postérieure à la date d'échéance de la tache"<<endl;
+            return;
+        }
+
         TacheExplorer::Iterator i = t->getTachesPrecedentesPourTraitement()->getIterator();
-		while(!i.isDone())
-		{
+        while(!i.isDone())
+        {
             //if (!isEvtExistant(i.current2())) isEvtExistant existant doit avoir pour paramètre evt*, la fonction est donc à définir
-            if (true)//en attendant
-			{
+            //getEvt(tache.tachesprecedente.current2()).getDebut <  evtTache1.debut;
+
+            if (!isEvtExistant(i.current2()))//en attendant
+            {
                 cout<<"Erreur de précédence !"<<endl;
-				return;
-			}
-			else
-			{
+                return;
+            }
+            else
+            {
                 if (date < trouverEvt(i.current2()->getId())->getDate())
-				{
-					cout<<"Erreur de précédence !"<<endl;
-					return;
-				}
-			}
-			i.next();
-		}
+                {
+                    cout<<"Erreur de précédence !"<<endl;
+                    return;
+                }
+            }
+            i.next();
+        }
+
+        EvtTache * task = new EvtTache(date, h, t);
+        evt[nb] = task;
+
         evt[nb] = new EvtTache(date, h, t);
+
         nb++;
-	}
+    }
     else
     {
         for(unsigned int x = 0; x<nbpre; x++)
@@ -129,7 +136,6 @@ void EvtManager::addNewEvt(const QDate & d, const QString & s, const QTime & deb
     {
         if (evt[i]->getDate() == rdv->getDate())
         {
-            //QTime & fin = evt[i]->getDebut() + evt[i]->getDuree();
             QTime finEvt =  QTime (0,0,evt[i]->getDebut().second() + evt[i]->getDuree().second());
             if((evt[i]->getDebut() < rdv->getDebut()) && (rdv->getDebut() < finEvt))
             {
@@ -173,16 +179,15 @@ void EvtManager::supprimerEvt(const QString & s)
 
 Evt * EvtManager::trouverEvt(const QString & s)
 {
-	for(unsigned int i=0; i<nb; i++)
-	{
+    for(unsigned int i=0; i<nb; i++)
+    {
         if (evt[i]->getDescripteur() == s)
-		{
-			return evt[i];
-		}
-	}
-	return NULL;
+        {
+            return evt[i];
+        }
+    }
+    return NULL;
 }
-
 
 
 

@@ -33,12 +33,10 @@ int main(int argc, char *argv[])
     TacheManager::getInstance().getTache("11").ajouterTacheUnitaire("113","Attendre le sechage",d1,date1,date2,false);
     dynamic_cast<TacheUnitaire*>(&TacheManager::getInstance().getTache("112"))->ajouterTachePrecedente(&TacheManager::getInstance().getTache("113"));
     TacheManager::getInstance().save("test1.xml","0");
-    std::cout<<"Oui";
     TacheManager::getInstance().creerTreeModel("Arbre.txt","0");
-    std::cout<<"OuiOui";
-    //MainWindow w;
-    //w.show();
-    exit(EXIT_SUCCESS);
+    MainWindow w;
+    w.show();
+
     }
     catch (CalendarException &e){std::cout<<"Exception levee"<<e.getInfo().toStdString();}
     return a.exec();

@@ -18,17 +18,17 @@ using namespace std;
     QTime & operator +(const QTime & u, const QTime & v);
 
     class Evt {
-	  protected :
+      protected :
         QDate date;
-		QString sujet;
-		QTime debut;
+        QString sujet;
+        QTime debut;
         QTime duree;
       public:
         Evt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur): date(d), sujet(s), debut(deb), duree(dur) {}
-		virtual ~Evt() {}
-		const QString & getDescripteur() { return sujet; }
-		const QDate & getDate() { return date; }
-		const QTime & getDebut() const { return this->debut; }
+        virtual ~Evt() {}
+        const QString & getDescripteur() { return sujet; }
+        const QDate & getDate() { return date; }
+        const QTime & getDebut() const { return this->debut; }
         const QTime & getDuree() const { return this->duree; }
         virtual bool imEvtTache() = 0;
         /*virtual QString toString() const
@@ -46,36 +46,38 @@ using namespace std;
       public:
         EvtRDV(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers):
                 Evt(d, s, deb, dur), lieu(l), personne(pers) {}
-		~EvtRDV() {}
-		/*RDV(const RDV& r): Evt1jDur(r.getDate(), r.getDescription(), r.getDebut(), r.getDuree()),
-		        lieu(r.getLieu()), personne(r.getPersonne())
-		        {} */
-		EvtRDV & operator =(const EvtRDV & r)
-		{
-		    	this->lieu = r.lieu;
-		    	this->personne = r.personne;
+        ~EvtRDV() {}
+        /*RDV(const RDV& r): Evt1jDur(r.getDate(), r.getDescription(), r.getDebut(), r.getDuree()),
+                lieu(r.getLieu()), personne(r.getPersonne())
+                {} */
+        EvtRDV & operator =(const EvtRDV & r)
+        {
+                this->lieu = r.lieu;
+                this->personne = r.personne;
 
                 EvtRDV *x = this;
-		    	*x = r;
+                *x = r;
                 return *x;
-		}
-		const QString & getLieu() const { return this->lieu; }
-		const QString & getPersonne() const { return this->personne; }
+        }
+        const QString & getLieu() const { return this->lieu; }
+        const QString & getPersonne() const { return this->personne; }
         bool imEvtTache() { return false; }
         /*QString toString() const
-		{
-		   	 std::stringstream f;
-			f<<"******** Evenement ********"<<"\n\n"<<"Date = "<<date<<"\n"<<" Sujet = "<<sujet<<"\n"<<"Debut = "<<debut<<"\n"<<"Duree = "<<duree<<"\n"<<"Lieu = 					"<<lieu<<"Personne = "<<personne<<"\n\n";
-		 	   return f.str();
+        {
+             std::stringstream f;
+            f<<"******** Evenement ********"<<"\n\n"<<"Date = "<<date<<"\n"<<" Sujet = "<<sujet<<"\n"<<"Debut = "<<debut<<"\n"<<"Duree = "<<duree<<"\n"<<"Lieu = 					"<<lieu<<"Personne = "<<personne<<"\n\n";
+               return f.str();
         }*/
     };
 
-	class EvtTache: public Evt {
-        const Tache* tache;
+    class EvtTache: public Evt {
+      QString sujet;
+      const Tache* tache;
       public:
         EvtTache(const QDate & d, const QTime & deb, const Tache* t): Evt(d, t->getTitre(), deb, t->getDuree()), tache(t) {}
+
         bool imEvtTache() { return true; }
-	};
+    };
 
     class EvtManager {
       protected:
@@ -93,7 +95,7 @@ using namespace std;
         virtual void addNewEvt(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers);
         virtual void supprimerEvt(const QString & s);
         Evt * trouverEvt(const QString & s);
-        bool isEvtExistant(Evt * e) { return trouverEvt(e->getDescripteur()) != NULL; }
+        bool isEvtExistant(Tache * t) { return trouverEvt(t->getTitre()) != NULL; }
         void load(QString & f);
         void save(QString & f);
 
@@ -139,7 +141,6 @@ using namespace std;
 
 
 #endif // EVENEMENT_H_INCLUDED
-
 
 
 

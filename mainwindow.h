@@ -4,6 +4,10 @@
 #include <QCoreApplication>
 #include <QMainWindow>
 #include <QTableView>
+#include "treemodel.h"
+#include <QApplication>
+#include <QFile>
+#include <QTreeView>
 
 namespace Ui {
     class MainWindow;
@@ -20,6 +24,14 @@ class MainWindow : public QMainWindow
 };
 
 QTableView Qv (QWidget* parent = 0);
+/*
 
+QFile file(":/default.txt");
+file.open(QIODevice::ReadOnly);
+TreeModel model(file.readAll());
+file.close();
+
+QTreeView view;
+view.setModel(&model);*/
 
 #endif // MAINWINDOW_H

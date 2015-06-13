@@ -38,7 +38,7 @@ QTextStream& operator<<(QTextStream& fout, const Tache& t){
 VisiteurTache::VisiteurTache(){}
 VisiteurTache::~VisiteurTache(){}
 
-void VisiteurSauvegarde::visiterProjet(Projet* p){
+void TacheManager::VisiteurSauvegarde::visiterProjet(Projet* p){
     std::cout<<"Sauvegarde commence";
     stream->setAutoFormatting(true);
     stream->writeStartDocument();
@@ -56,7 +56,7 @@ void VisiteurSauvegarde::visiterProjet(Projet* p){
     newfile.close();
 }
 
-void VisiteurSauvegarde::visiterTacheUnitaire (TacheUnitaire* tU)
+void TacheManager::VisiteurSauvegarde::visiterTacheUnitaire (TacheUnitaire* tU)
 {
     std::cout<<"visiteUnit";
     stream->writeStartElement("Tache unitaire");
@@ -68,11 +68,15 @@ void VisiteurSauvegarde::visiterTacheUnitaire (TacheUnitaire* tU)
     QString str;
     str.setNum(tU->getDuree().minute());
     stream->writeTextElement("duree",str);
+    if (tU->getProgrammee())
+        stream->writeTextElement("programmee","1");
+    else
+        stream->writeTextElement("programmee","0");
     stream->writeEndElement();
 
 }
 
-void VisiteurSauvegarde::visiterTacheComposite (TacheComposite* tC)
+void TacheManager::VisiteurSauvegarde::visiterTacheComposite (TacheComposite* tC)
 {
     std::cout<<"visiteCompo";
     stream->writeStartElement("Tache composite");
@@ -160,7 +164,7 @@ TacheExplorer::~TacheExplorer(){
 
 TacheManager::TacheManager():TacheExplorer(){}
 TacheManager::~TacheManager(){
-    if (file!="") save(file);
+    //if (file!="") save(file);
     for(unsigned int i=0; i<nb; i++) delete taches[i];
     delete[] taches;
     file="";
@@ -185,7 +189,7 @@ void TacheManager::load(const QString& f){
     QFile fin(file);
     // If we can't open it, let's show an error message.
     if (!fin.open(QIODevice::ReadOnly | QIODevice::Text)) {
-        throw CalendarException("Erreur ouverture fichier t�ches");
+        throw CalendarException("Erreur ouverture fichier taches");
     }
     // QXmlStreamReader takes any QIODevice.
     QXmlStreamReader xml(&fin);
@@ -273,33 +277,6 @@ void TacheManager::load(const QString& f){
     //qDebug()<<"fin load\n";
 }
 
-void  TacheManager::save(const QString& f){
-    file=f;
-    QFile newfile( file);
-    if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
-        throw CalendarException(QString("erreur sauvegarde t�ches : ouverture fichier xml"));
-    QXmlStreamWriter stream(&newfile);
-    stream.setAutoFormatting(true);
-    stream.writeStartDocument();
-    stream.writeStartElement("taches");
-    for(unsigned int i=0; i<nb; i++){
-        stream.writeStartElement("tache");
-        //stream.writeAttribute("preemptive", (taches[i]->isPreemptive())?"true":"false");
-        stream.writeTextElement("identificateur",taches[i]->getId());
-        stream.writeTextElement("titre",taches[i]->getTitre());
-        stream.writeTextElement("disponibilite",taches[i]->getDateDisponibilite().toString(Qt::ISODate));
-        stream.writeTextElement("echeance",taches[i]->getDateEcheance().toString(Qt::ISODate));
-        QString str;
-        str.setNum(taches[i]->getDuree().minute());
-        stream.writeTextElement("duree",str);
-        stream.writeEndElement();
-    }
-    stream.writeEndElement();
-    stream.writeEndDocument();
-    newfile.close();
-}
-
-
 TacheManager::Handler TacheManager::handler=TacheManager::Handler();
 
 TacheManager& TacheManager::getInstance(){
@@ -330,6 +307,9 @@ void TacheComposite::ajouterTacheComposite(const QString& id, const QString& t){
 }
 
 void TacheComposite::ajouterTacheExistante(Tache* t){
+    if(t->isUnitaire())
+        if(dynamic_cast<TacheUnitaire*>(t)->isInTree())
+            throw CalendarException ("Erreur : Cette tache appartient déjà à un projet");
     sousTaches->addItem(t);
     updateAttributs();
 }
@@ -401,6 +381,33 @@ void TacheComposite::updateAttributs(){
     updateTachesPrecedentes();
 }
 
+
+
+bool VisiteurAParenteDeB::result(){
+    TacheExplorer::Iterator it = parente->sousTaches->getIterator();
+    while(!it.isDone()){
+        it.current2()->accept(this);
+        it.next();
+    }
+    return leResultat;
+}
+
+void VisiteurAParenteDeB::visiterTacheComposite(TacheComposite*t){
+    if (t->getId()==fille->getId())
+        leResultat = true;
+    TacheExplorer::Iterator it = t->sousTaches->getIterator();
+    while(!it.isDone()){
+        it.current2()->accept(this);
+        it.next();
+    }
+
+}
+void VisiteurAParenteDeB::visiterTacheUnitaire(TacheUnitaire *t){
+    if (t->getId()==fille->getId())
+        leResultat = true;
+}
+
+
 /**
  * @brief TacheUnitaire::ajouterTachePrecedente
  * @param tP
@@ -409,6 +416,12 @@ void TacheComposite::updateAttributs(){
  * concaténnées sans redondance à celles de la tache courante.
  */
 void TacheUnitaire::ajouterTachePrecedente(Tache* tP){
+    if (!tP->isUnitaire())
+    {
+    VisiteurAParenteDeB vS (dynamic_cast<TacheComposite*>(tP),this);
+    if(vS.result())
+        throw CalendarException("Erreur Precedence : la tache à ajouter contient la tache courante");
+    }
     tP->ajouterTachePrecedenteA(this);
     tachesPrecedentesAffichage->addItem(tP);
 }

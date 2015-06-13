@@ -4,6 +4,8 @@
 #include <QDate>
 #include <QFile>
 #include <QTextStream>
+#include <iostream>
+#include <fstream>
 //#include <QMessageBox>
 #include <QtXml>
 #include "timing.h"
@@ -34,22 +36,6 @@ public:
     virtual void visiterTacheUnitaire (TacheUnitaire* tU)=0;
     virtual void visiterTacheComposite (TacheComposite* tC)=0;
     virtual void visiterProjet (Projet* p)=0;
-};
-
-class VisiteurSauvegarde:public VisiteurTache{
-public :
-    VisiteurSauvegarde(const QString& f):VisiteurTache(),file(f),newfile(f){
-        if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
-            throw CalendarException(QString("erreur sauvegarde taches : ouverture fichier xml"));
-        stream = new QXmlStreamWriter (&newfile);
-    }
-    ~VisiteurSauvegarde(){}
-    QString file;
-    QFile newfile;
-    QXmlStreamWriter* stream;
-    void visiterTacheUnitaire (TacheUnitaire* tU);
-    void visiterTacheComposite (TacheComposite* tC);
-    void visiterProjet(Projet *p);
 };
 
 class TacheExplorer;
@@ -147,58 +133,6 @@ public:
     iterator end() { return iterator(taches+nb); }
 };
 
-class TacheManager:public TacheExplorer {
-private:
-
-    QString file;
-    TacheManager();
-    ~TacheManager();
-    TacheManager(const TacheManager& um);
-    TacheManager& operator=(const TacheManager& um);
-    struct Handler{
-        TacheManager* instance;
-        Handler():instance(0){}
-        // destructeur appel� � la fin du programme
-        ~Handler(){ if (instance) delete instance; }
-    };
-    static Handler handler;
-public:
-    void load(const QString& f);
-    void save(const QString& f);
-    TacheExplorer& getTachesNonProgrammees();
-    static TacheManager& getInstance();
-    static void libererInstance();
-
-    class DisponibiliteFilterIterator {
-        friend class TacheManager;
-        Tache** currentTache;
-        unsigned int nbRemain;
-        QDate dispo;
-        DisponibiliteFilterIterator(Tache** u, unsigned nb, const QDate& d):currentTache(u),nbRemain(nb),dispo(d){
-            while(nbRemain>0 && dispo<(*currentTache)->getDateDisponibilite()){
-                nbRemain--; currentTache++;
-            }
-        }
-    public:
-        DisponibiliteFilterIterator():currentTache(0), nbRemain(0){}
-        bool isDone() const { return nbRemain==0; }
-        void next() {
-            if (isDone())
-                throw CalendarException("error, next on an iterator which is done");
-            do {
-                nbRemain--; currentTache++;
-            }while(nbRemain>0 && dispo<(*currentTache)->getDateDisponibilite());
-        }
-        Tache& current() const {
-            if (isDone())
-                throw CalendarException("error, indirection on an iterator which is done");
-            return **currentTache;
-        }
-    };
-    DisponibiliteFilterIterator getDisponibiliteFilterIterator(const QDate& d) {
-        return DisponibiliteFilterIterator(taches,nb,d);
-    }
-};
 
 class TacheComposite:public Tache{
 public:
@@ -234,6 +168,19 @@ public:
     QString getDescription()const{return description;}
 private:
     QString description;
+};
+
+class VisiteurAParenteDeB:public VisiteurTache{
+const TacheComposite* parente;
+const Tache* fille;
+bool leResultat;
+public :
+    VisiteurAParenteDeB(const TacheComposite* p,const Tache* f):VisiteurTache(),parente(p),fille(f),leResultat(false){}
+    virtual ~VisiteurAParenteDeB(){}
+    bool result();
+    void visiterTacheUnitaire (TacheUnitaire* tU);
+    void visiterTacheComposite (TacheComposite* tC);
+    void visiterProjet(Projet*){throw CalendarException("Un projet est forcément parent de toutes les taches qui le composent");}
 };
 
 class TacheUnitaire:public Tache{
@@ -272,6 +219,81 @@ public:
     void setInTree() { inTree=true; }
     void setNonInTree() { inTree=false; }
 };
+
+
+class TacheManager:public TacheExplorer {
+private:
+
+    QString file;
+    TacheManager();
+    ~TacheManager();
+    TacheManager(const TacheManager& um);
+    TacheManager& operator=(const TacheManager& um);
+    struct Handler{
+        TacheManager* instance;
+        Handler():instance(0){}
+        // destructeur appel� � la fin du programme
+        ~Handler(){ if (instance) delete instance; }
+    };
+    static Handler handler;
+public:
+    TacheExplorer& getTachesUnitairesNonProgrammees();
+    static TacheManager& getInstance();
+    static void libererInstance();
+    TacheExplorer& getTachesNonProgrammees();
+
+    class VisiteurSauvegarde:public VisiteurTache{
+    QFile newfile;
+    QString file;
+    public :
+        VisiteurSauvegarde(const QString& f):VisiteurTache(),file(f){
+            newfile.setFileName(f);
+            if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
+                throw CalendarException(QString("erreur sauvegarde taches : ouverture fichier xml"));
+            stream = new QXmlStreamWriter (&newfile);
+        }
+        ~VisiteurSauvegarde(){}
+        QXmlStreamWriter* stream;
+        void visiterTacheUnitaire (TacheUnitaire* tU);
+        void visiterTacheComposite (TacheComposite* tC);
+        void visiterProjet(Projet *p);
+    };
+    /*class VisiteurTreeModel:public VisiteurTache{
+    QString file;
+    public :
+        VisiteurTreeModel(const QString& f):VisiteurTache(),file(f){
+            if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
+                throw CalendarException(QString("erreur sauvegarde taches : ouverture fichier xml"));
+        }
+        ~VisiteurTreeModel(){}
+        void visiterTacheUnitaire (TacheUnitaire* tU);
+        void visiterTacheComposite (TacheComposite* tC);
+        void visiterProjet(Projet *p){
+            ofstream fichier(file, ios::out | ios::trunc);
+            if (fichier){
+                fichier<<;
+                Iterator it = p->sousTaches->getIterator();
+                while (!it.isDone())
+                {
+                    it.current2()->visit(this);
+                }
+                fichier.close();
+            }
+            else
+                throw CalendarException("Erreur à l'ouverture du fichier de TreeModel");
+        }
+    };*/
+    void load(const QString& f);
+    void save(const QString& f,const QString& id){
+        VisiteurSauvegarde* vS = new VisiteurSauvegarde(f);
+        Tache* t= &getTache(id);
+        Projet* p=dynamic_cast<Projet*>(t);
+        vS->visiterProjet(p);
+    }
+
+};
+
+
 
 
 

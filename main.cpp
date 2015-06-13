@@ -7,6 +7,11 @@
 #include <QCoreApplication>
 #include <QApplication>
 
+
+///EXEMPLE: ui->lineEdit_titre->accessibleDescription();
+///Pour recuperer la valeur entree je pense :)
+
+
 int main(int argc, char *argv[])
 {
     QApplication a(argc, argv);

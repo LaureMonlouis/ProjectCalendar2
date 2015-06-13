@@ -3,11 +3,6 @@
 
 using namespace std;
 
-/*QTime & operator +(const QTime & u, const QTime & v)
-{
-    return QTime(u.hour()+v.hour(), u.minute()+v.minute());
-}*///Inutile car QTime possède une méthode addSec() (a utiliser avec l'accesseur .second())
-
 /// ******************** Fonctions EvtManager ******************** ///
 
 /// ********** Fonction pour ajouter une tache déjà existante ********** ///

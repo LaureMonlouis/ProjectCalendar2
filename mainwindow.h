@@ -4,6 +4,7 @@
 #include <QCoreApplication>
 
 #include <QMainWindow>
+#include <QTableView>
 
 namespace Ui {
 class MainWindow;

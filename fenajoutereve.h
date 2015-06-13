@@ -4,18 +4,17 @@
 #include <QWidget>
 
 namespace Ui {
-class fenAjouterEve;
+    class fenAjouterEve;
 }
 
 class fenAjouterEve : public QWidget
 {
     Q_OBJECT
 
-public:
+  public:
     explicit fenAjouterEve(QWidget *parent = 0);
     ~fenAjouterEve();
-
-private:
+  private:
     Ui::fenAjouterEve *ui;
 };
 

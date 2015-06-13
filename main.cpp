@@ -20,6 +20,7 @@ int main(int argc, char *argv[])
     TacheManager::getInstance().addItem(p);
     TacheManager::getInstance().getTache("0").ajouterTacheUnitaire("1","Faire les courses chez castorama",d1,date1,date2,false);
     TacheManager::getInstance().getTache("0").ajouterTacheComposite("2","Assembler les morceaux");
+    TacheManager::getInstance().getTache("0").ajouterTacheUnitaire("3","Obtenir un permis de construire",d1,date1,date2,false);
     TacheManager::getInstance().getTache("2").ajouterTacheUnitaire("12","Assembler la charpente",d1,date1,date2,false);
     TacheManager::getInstance().getTache("2").ajouterTacheComposite("11","Assembler les briques");
     TacheManager::getInstance().getTache("11").ajouterTacheUnitaire("111","Mettre du ciment",d1,date1,date2,false);
@@ -28,9 +29,13 @@ int main(int argc, char *argv[])
     dynamic_cast<TacheUnitaire*>(&TacheManager::getInstance().getTache("112"))->ajouterTachePrecedente(&TacheManager::getInstance().getTache("113"));
     TacheManager::getInstance().save("test1.xml","0");
     std::cout<<"Oui";
+    TacheManager::getInstance().creerTreeModel("Arbre.txt","0");
+    std::cout<<"OuiOui";
     //MainWindow w;
     //w.show();
+    exit(EXIT_SUCCESS);
     }
     catch (CalendarException &e){std::cout<<"Exception levee"<<e.getInfo().toStdString();}
     return a.exec();
+    a.closeAllWindows();
 }

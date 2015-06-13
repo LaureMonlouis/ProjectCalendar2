@@ -58,7 +58,6 @@ void TacheManager::VisiteurSauvegarde::visiterProjet(Projet* p){
 
 void TacheManager::VisiteurSauvegarde::visiterTacheUnitaire (TacheUnitaire* tU)
 {
-    std::cout<<"visiteUnit";
     stream->writeStartElement("Tache unitaire");
     //stream->writeAttribute("preemptive", (taches[i.current2()]->isPreemptive())?"true":"false");
     stream->writeTextElement("identificateur",tU->getId());
@@ -78,7 +77,6 @@ void TacheManager::VisiteurSauvegarde::visiterTacheUnitaire (TacheUnitaire* tU)
 
 void TacheManager::VisiteurSauvegarde::visiterTacheComposite (TacheComposite* tC)
 {
-    std::cout<<"visiteCompo";
     stream->writeStartElement("Tache composite");
     stream->writeTextElement("identificateur",tC->getId());
     stream->writeTextElement("titre",tC->getTitre());
@@ -406,6 +404,67 @@ void VisiteurAParenteDeB::visiterTacheUnitaire(TacheUnitaire *t){
     if (t->getId()==fille->getId())
         leResultat = true;
 }
+
+void TacheManager::VisiteurTreeModel::visiterTacheUnitaire (TacheUnitaire* tU){
+    ofstream str1(file.toStdString().c_str(), ios::out | ios::app);
+    indiceIndentation++;
+    str1<<indentation(indiceIndentation);
+    string chaine = tU->getTitre().toStdString()+"\t"+tU->getId().toStdString()+"\t"+tU->getDuree().toString().toStdString()+"\t"+tU->getDateDisponibilite().toString().toStdString()+"\t"+tU->getDateEcheance().toString().toStdString()+"\t";
+    str1<<chaine;
+         if(tU->getProgrammee()){
+            str1<<"Oui"<<"\t";
+         }
+         else
+            str1<<"Non"<<"\t";
+         if(tU->isPreemptive()){
+            str1<<"Oui";
+         }
+         else
+            str1<<"Non";
+    str1<<endl;
+    str1.close();
+    indiceIndentation--;
+}
+void TacheManager::VisiteurTreeModel::visiterTacheComposite (TacheComposite* tC){
+    ofstream str2(file.toStdString().c_str(), ios::out | ios::app);
+    indiceIndentation++;
+    str2<<indentation(indiceIndentation);
+    string chaine = tC->getTitre().toStdString()+"\t"+tC->getId().toStdString()+"\t"+tC->getDuree().toString().toStdString()+"\t"+tC->getDateDisponibilite().toString().toStdString()+"\t"+tC->getDateEcheance().toString().toStdString()+"\t";
+    str2<<chaine;
+         if(tC->getProgrammee()){
+            str2<<"Oui";
+         }
+         else
+            str2<<"Non";
+    str2<<endl;
+    str2.close();
+    Iterator it = tC->sousTaches->getIterator();
+    while (!it.isDone()){
+        it.current2()->accept(this);
+        it.next();
+    }
+    indiceIndentation--;
+}
+void TacheManager::VisiteurTreeModel::visiterProjet(Projet *p){
+    ofstream str(file.toStdString().c_str(), ios::out | ios::trunc);
+    if (!str)
+        throw CalendarException(QString("erreur creation d'arbre : fichier inexistant"));
+    str.close();
+    Iterator it = p->sousTaches->getIterator();
+    while (!it.isDone())
+    {
+        it.current2()->accept(this);
+        it.next();
+    }
+}
+string TacheManager::VisiteurTreeModel::indentation(unsigned int n){
+    string f ="";
+    for (unsigned int i=0;i<n;i++)
+        f=f+"  ";
+    return f;
+}
+
+
 
 
 /**

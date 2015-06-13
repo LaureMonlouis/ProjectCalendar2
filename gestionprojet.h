@@ -1,6 +1,7 @@
 #ifndef GESTIONPROJET
 #define GESTIONPROJET
 #include <QString>
+#include<string>
 #include <QDate>
 #include <QFile>
 #include <QTextStream>
@@ -13,6 +14,8 @@
 const QDate DATE_MIN = QDate(0,1,1);
 const QDate DATE_MAX = QDate(9999,1,1);
 const QTime D_NON_PREEMPT = QTime (12,0);
+
+using namespace std;
 
 class CalendarException{
 public:
@@ -212,7 +215,7 @@ public:
         throw CalendarException("erreur Tache : impossible d'ajouter une tache à une tache unitaire");
     }
     bool isUnitaire (){return true;}
-    bool isPreemptive() const { return preemptive; }
+    bool isPreemptive() const {return preemptive; }
     void setPreemptive() { preemptive=true; }
     void setNonPreemptive() { preemptive=false; }
     bool isInTree() const { return inTree; }
@@ -258,31 +261,23 @@ public:
         void visiterTacheComposite (TacheComposite* tC);
         void visiterProjet(Projet *p);
     };
-    /*class VisiteurTreeModel:public VisiteurTache{
+    class VisiteurTreeModel:public VisiteurTache{
     QString file;
+    int indiceIndentation;
     public :
-        VisiteurTreeModel(const QString& f):VisiteurTache(),file(f){
-            if (!newfile.open(QIODevice::WriteOnly | QIODevice::Text))
-                throw CalendarException(QString("erreur sauvegarde taches : ouverture fichier xml"));
-        }
+        VisiteurTreeModel(const QString& f):VisiteurTache(),file(f),indiceIndentation(-1){}
         ~VisiteurTreeModel(){}
         void visiterTacheUnitaire (TacheUnitaire* tU);
         void visiterTacheComposite (TacheComposite* tC);
-        void visiterProjet(Projet *p){
-            ofstream fichier(file, ios::out | ios::trunc);
-            if (fichier){
-                fichier<<;
-                Iterator it = p->sousTaches->getIterator();
-                while (!it.isDone())
-                {
-                    it.current2()->visit(this);
-                }
-                fichier.close();
-            }
-            else
-                throw CalendarException("Erreur à l'ouverture du fichier de TreeModel");
-        }
-    };*/
+        void visiterProjet(Projet *p);
+        string indentation(unsigned int n);
+    };
+    void creerTreeModel(const QString& f,const QString& id){
+        VisiteurTreeModel* vT = new VisiteurTreeModel(f);
+        Tache* t= &getTache(id);
+        Projet* p=dynamic_cast<Projet*>(t);
+        vT->visiterProjet(p);
+    }
     void load(const QString& f);
     void save(const QString& f,const QString& id){
         VisiteurSauvegarde* vS = new VisiteurSauvegarde(f);

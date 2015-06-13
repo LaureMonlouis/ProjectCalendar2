@@ -3,6 +3,9 @@
 
 using namespace std;
 
+//EXEMPLE: ui->lineEdit_titre->accessibleDescription();
+//Pour recuperer la valeur entree je pense :)
+
 /// ******************** Fonctions EvtManager ******************** ///
 
 /// ********** Fonction pour ajouter une tache déjà existante ********** ///
@@ -75,7 +78,7 @@ void EvtManager::addEvt(const Tache * t, const QDate & date, const QTime & h, bo
 			}
 			i.next();
 		}
-        //evt[nb]=Evt(date, t->getTitre(), h, t->getDuree());
+        evt[nb] = EvtTache(date, h, t);
         nb++;
 	}
     else

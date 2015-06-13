@@ -41,7 +41,7 @@ using namespace std;
     };
 
     class EvtRDV: public Evt{
-	QString lieu;
+        QString lieu;
         QString personne;
       public:
         EvtRDV(const QDate & d, const QString & s, const QTime & deb, const QTime & dur, const QString & l, const QString & pers):
@@ -71,9 +71,9 @@ using namespace std;
     };
 
 	class EvtTache: public Evt {
-        Tache * tache;
+        Tache tache;
       public:
-        //EvtTache(Tache * t): Evt(),tache(t) {}          //A finir !
+        EvtTache(const QDate & d, const QTime & deb, const Tache & t): Evt(d, t.getTitre(), deb, t.getDuree()), tache(t) {}
         bool imEvtTache() { return true; }
 	};
 
